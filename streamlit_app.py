@@ -20,7 +20,6 @@ historical_figures = [
     {"レアリティ": "N", "人物名": "王献之", "説明": "東晋時代の書家で、草書の大家。『蘭亭序』という名作を書いた。"},
     {"レアリティ": "N", "人物名": "范文正", "説明": "五胡十六国時代の政治家で、北魏の太尉。文化振興と国内安定に貢献した。"}
 
-
 # ガチャを引く関数
 def pull_gacha():
     random_figure = random.choice(historical_figures)
