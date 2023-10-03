@@ -1,49 +1,34 @@
 import streamlit as st
 import random
 
-# カードの数字
-cards = [1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]
-random.shuffle(cards)
+# スペード, ダイヤ, ハート, クローバー
+suits = ["s", "d", "h", "c"]
 
-# ゲーム状態を管理する変数
-selected_cards = []
-first_card = None
-flip_timer_id = None
+# カード情報を配列に格納
+cards = []
+for suit in suits:
+    for num in range(1, 14):
+        cards.append((suit, num))
 
-# アプリのタイトル
+# シャッフルする関数
+def shuffle(cards):
+    shuffled = cards.copy()
+    random.shuffle(shuffled)
+    return shuffled
+
+# Streamlitアプリケーションの開始
 st.title("神経衰弱ゲーム")
 
-# カードを表示
-for i in range(4):
-    for j in range(4):
-        card_index = i * 4 + j
-        if card_index not in selected_cards:
-            if first_card is None or len(selected_cards) % 2 == 0:
-                if st.button(f"カード {card_index + 1}"):
-                    selected_cards.append(card_index)
+# シャッフルボタン
+if st.button("カードをシャッフル"):
+    shuffled_cards = shuffle(cards)
+    # シャッフルしたカードを表示（ダミー画像を使用）
+    for i in range(0, len(cards), 13):
+        row = st.beta_columns(13)
+        for j in range(13):
+            with row[j]:
+                # ダミーのカード画像を表示
+                st.image("https://via.placeholder.com/80x120.png", use_container_width=True, caption="カード")
 
-# ゲームロジック
-if len(selected_cards) % 2 == 0:
-    card1 = selected_cards[-2]
-    card2 = selected_cards[-1]
-    if cards[card1] == cards[card2]:
-        st.success("正解！")
-        selected_cards.pop()
-        selected_cards.pop()
-        if len(selected_cards) == 16:
-            st.success("ゲームクリア！すべてのカードをゲットしました。")
-    else:
-        st.error("不正解")
-        flip_timer_id = st.empty()
+st.text("カードをクリックして遊びましょう！")
 
-        def reset_error():
-            st.error("")
-            flip_timer_id.empty()
-
-        st.experimental_set_timeout(1, reset_error)
-
-# リセットボタン
-if len(selected_cards) == 16:
-    if st.button("リセット"):
-        selected_cards = []
-        random.shuffle(cards)
