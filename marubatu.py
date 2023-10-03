@@ -20,10 +20,6 @@ for i in range(4):
         if not game_over and card_index not in selected_cards:
             if st.button(f"カード {card_index + 1}"):
                 selected_cards.append(card_index)
-        
-        if card_index in selected_cards or game_over:
-            card_number = cards[card_index]
-            st.write(f"カード {card_index + 1}: {card_number}")
 
 # ゲームロジック
 if len(selected_cards) == 2 and not game_over:
@@ -42,7 +38,4 @@ if len(selected_cards) == 2 and not game_over:
 # リセットボタン
 if game_over:
     if st.button("リセット"):
-        selected_cards = []
-        found_pairs = 0
-        game_over = False
-        random.shuffle(cards)
+        selected_cards =
