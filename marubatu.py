@@ -31,4 +31,3 @@ if st.button("カードをシャッフル"):
                 st.image("https://via.placeholder.com/80x120.png", use_container_width=True, caption="カード")
 
 st.text("カードをクリックして遊びましょう！")
-
