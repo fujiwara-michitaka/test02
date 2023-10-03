@@ -35,7 +35,7 @@ for i in range(4):
         
         if card_index in selected_cards or game_over:
             card_number = cards[card_index]
-            st.image(f"card_{card_number}.png", use_container_width=True, key=f"card_{card_number}")
+            st.write(f"カード {card_index + 1}: {card_number}")
 
 # ゲームロジック
 if len(selected_cards) == 2 and not game_over:
