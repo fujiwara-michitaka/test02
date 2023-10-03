@@ -22,12 +22,8 @@ st.title("神経衰弱ゲーム")
 # シャッフルボタン
 if st.button("カードをシャッフル"):
     shuffled_cards = shuffle(cards)
-    # シャッフルしたカードを表示（ダミー画像を使用）
-    for i in range(0, len(cards), 6):  # 列数を6に変更
-        row = st.beta_columns(6)  # 列数を6に変更
-        for j in range(6):  # 列数を6に変更
-            with row[j]:
-                # ダミーのカード画像を表示
-                st.image("https://via.placeholder.com/80x120.png", use_container_width=True, caption="カード")
+    # シャッフルしたカードを表示
+    for i, (suit, num) in enumerate(shuffled_cards):
+        st.write(f"カード {i+1}: {suit}{num}")
 
 st.text("カードをクリックして遊びましょう！")
