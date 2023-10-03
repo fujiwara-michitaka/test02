@@ -32,7 +32,7 @@ for i in range(num_cols):
     for j in range(4):
         card_index = i * 4 + j
         if not game_over and card_index not in selected_cards:
-            if columns[i].button(f"カード {card_index + 1}"):
+            if columns[j].button(f"カード {card_index + 1}"):
                 selected_cards.append(card_index)
         
         if card_index in selected_cards or game_over:
