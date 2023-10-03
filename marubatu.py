@@ -25,17 +25,20 @@ game_over = False
 # アプリのタイトル
 st.title("神経衰弱ゲーム")
 
-# ゲームボードを表示
-for i in range(4):
+# グリッドレイアウトを作成
+num_cols = 4
+for i in range(num_cols):
+    col = st.beta_container()
     for j in range(4):
         card_index = i * 4 + j
-        if not game_over and st.button(f"カード {card_index + 1}"):
-            if card_index not in selected_cards:
-                selected_cards.append(card_index)
+        if not game_over and card_index not in selected_cards:
+            with col:
+                if st.button(f"カード {card_index + 1}"):
+                    selected_cards.append(card_index)
         
         if card_index in selected_cards or game_over:
             card_number = cards[card_index]
-            st.write(f"カード {card_index + 1}: {card_number}")
+            col.write(f"カード {card_index + 1}: {card_number}")
 
 # ゲームロジック
 if len(selected_cards) == 2 and not game_over:
@@ -48,9 +51,10 @@ if len(selected_cards) == 2 and not game_over:
         if found_pairs == len(card_data):
             game_over = True
             st.success("ゲームクリア！すべてのカードをゲットしました。")
-
     else:
         st.error("不正解")
+        # 不正解の場合、選択したカードを一時的に非表示に
+        st.button("カード 非表示", key="hide_button")
 
 # クイズ表示
 if len(selected_cards) == 2 and not game_over:
