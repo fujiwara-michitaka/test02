@@ -78,4 +78,4 @@ if st.button("ガチャを引く"):
     st.write(f"人物名: {result['人物名']}")
     st.write(f"説明: {result['説明']}")
     display_quiz(result["人物名"])
-    
+
