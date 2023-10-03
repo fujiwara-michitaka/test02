@@ -33,9 +33,7 @@ for i in range(4):
             if card_index not in selected_cards:
                 selected_cards.append(card_index)
         
-        if card_index in selected_cards:
-            st.image("card_front.png", use_container_width=True, key=f"card_front_{card_index}")
-        elif card_index in selected_cards or game_over:
+        if card_index in selected_cards or game_over:
             card_number = cards[card_index]
             st.image(f"card_{card_number}.png", use_container_width=True, key=f"card_{card_number}")
 
