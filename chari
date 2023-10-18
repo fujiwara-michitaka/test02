@@ -1,5 +1,8 @@
-# 必要なライブラリをインポート
+import streamlit as st
 import random
+
+# Streamlitアプリのタイトルを設定
+st.title("アラームシステム")
 
 # 15m以内に人がいるかの情報をカメラで取得
 def check_for_person():
@@ -24,22 +27,22 @@ def detect_alarm_level():
     else:
         return 0
 
-# アラームをスピーカーから出力
-def sound_alarm(level):
-    if level == 3:
-        print("レベル3のアラームを鳴らす（音量：高音）")
-        # スピーカーから高音を出力するコードを追加
-    elif level == 2:
-        print("レベル2のアラームを鳴らす（音量：中音）")
-        # スピーカーから中音を出力するコードを追加
-    elif level == 1:
-        print("レベル1のアラームを鳴らす（音量：低音）")
-        # スピーカーから低音を出力するコードを追加
-    else:
-        print("アラームは鳴らしません")
-
-# アラームのレベルを判定
+# Streamlitアプリ内でアラームを表示
 alarm_level = detect_alarm_level()
+if alarm_level > 0:
+    st.write(f"アラームレベル: {alarm_level}")
+    if alarm_level == 3:
+        st.write("レベル3のアラームを鳴らす（音量：高音）")
+        # スピーカーから高音を出力するコードを追加
+    elif alarm_level == 2:
+        st.write("レベル2のアラームを鳴らす（音量：中音）")
+        # スピーカーから中音を出力するコードを追加
+    elif alarm_level == 1:
+        st.write("レベル1のアラームを鳴らす（音量：低音）")
+        # スピーカーから低音を出力するコードを追加
+else:
+    st.write("アラームは鳴りません")
 
-# アラームを鳴らす
-sound_alarm(alarm_level)
+# Streamlitアプリを起動
+if __name__ == '__main__':
+    st.run()
