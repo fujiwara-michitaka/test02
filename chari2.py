@@ -27,10 +27,12 @@ def detect_alarm_level():
     else:
         return 0
 
-# Streamlitアプリ内でアラームを表示
+# アラームのレベルを判定
 alarm_level = detect_alarm_level()
+
+# Streamlitアプリ内でアラームを表示
+st.write(f"アラームレベル: {alarm_level}")
 if alarm_level > 0:
-    st.write(f"アラームレベル: {alarm_level}")
     if alarm_level == 3:
         st.write("レベル3のアラームを鳴らす（音量：高音）")
         # スピーカーから高音を出力するコードを追加
@@ -42,7 +44,3 @@ if alarm_level > 0:
         # スピーカーから低音を出力するコードを追加
 else:
     st.write("アラームは鳴りません")
-
-# Streamlitアプリを起動
-if __name__ == '__main__':
-    st.run()
