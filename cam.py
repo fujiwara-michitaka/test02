@@ -1,8 +1,8 @@
 import streamlit as st
-import mediapipe as mp
 import numpy as np
 from io import BytesIO
 from PIL import Image
+import mediapipe as mp
 
 # Mediapipeを使って姿勢と手首の位置を検出するためのライブラリのインポート
 mp_holistic = mp.solutions.holistic
