@@ -1,7 +1,8 @@
 import streamlit as st
-from PIL import Image
 import mediapipe as mp
 import numpy as np
+from io import BytesIO
+from PIL import Image
 
 # Mediapipeを使って姿勢と手首の位置を検出するためのライブラリのインポート
 mp_holistic = mp.solutions.holistic
@@ -42,18 +43,19 @@ def main():
                 # 距離に応じて円を描画
                 num_circles = int(distance * 10)
                 
-                # フレームデータをPIL Imageに変換
-                pil_image = Image.fromarray(frame_data)
-                draw = ImageDraw.Draw(pil_image)
+                # NumPy配列に直接円を描画
                 for _ in range(num_circles):
-                    # 右手首の位置に円を描画
-                    draw.ellipse([(int(right_wrist.x * pil_image.width) - 5, int(right_wrist.y * pil_image.height) - 5, int(right_wrist.x * pil_image.width) + 5, int(right_wrist.y * pil_image.height) + 5], fill=(0, 255, 0))
-                
-                # PIL ImageをNumPy配列に戻す
-                frame_data = np.array(pil_image)
+                    cv2.circle(frame_data, (int(right_wrist.x * frame_data.shape[1]), int(right_wrist.y * frame_data.shape[0]), 5, (0, 255, 0), -1)
         
-        # Streamlitウィジェットに新しいフレームを表示
-        st.image(frame_data, channels="RGB", use_column_width=True)
+        # NumPy配列をImageに変換
+        pil_image = Image.fromarray(frame_data)
+        
+        # Imageをバイトデータに変換
+        image_bytes = BytesIO()
+        pil_image.save(image_bytes, format="JPEG")
+        
+        # バイトデータを表示
+        st.image(image_bytes, use_column_width=True, format="JPEG")
                 
 if __name__ == "__main__":
     main()
