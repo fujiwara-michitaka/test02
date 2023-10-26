@@ -45,8 +45,11 @@ def main():
                 num_circles = int(distance * 10)
                 for _ in range(num_circles):
                     # 右手首の位置に円を描画
-                    cv2.circle(frame_data, (int(right_wrist.x * frame_data.shape[1]), int(right_wrist.y * frame_data.shape[0]), 5, (0, 255, 0), -1)
-        
+                    cv2.circle(frame_data, (int(right_wrist.x * frame_data.shape[1]), int(right_wrist.y * frame_data.shape[0]), 5, (0, 255, 0), -1))
+
+        # OpenCVのBGRカラースペースに戻す
+        frame_data = cv2.cvtColor(frame_data, cv2.COLOR_RGB2BGR)
+
         # Streamlitウィジェットに新しいフレームを設定
         frame.image(frame_data, channels="BGR")
                 
