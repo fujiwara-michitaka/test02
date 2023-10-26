@@ -1,6 +1,7 @@
 import streamlit as st
-import cv2
+from PIL import Image
 import mediapipe as mp
+import numpy as np
 
 # Mediapipeを使って姿勢と手首の位置を検出するためのライブラリのインポート
 mp_holistic = mp.solutions.holistic
@@ -17,9 +18,6 @@ def main():
     holistic = mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5)
     
     while True:
-        # Streamlitウィジェットを使用してカメラフレームを表示
-        frame = st.image([])
-        
         # カメラからフレームを取得
         _, frame_data = cap.read()
         
@@ -43,16 +41,19 @@ def main():
                 
                 # 距離に応じて円を描画
                 num_circles = int(distance * 10)
+                
+                # フレームデータをPIL Imageに変換
+                pil_image = Image.fromarray(frame_data)
+                draw = ImageDraw.Draw(pil_image)
                 for _ in range(num_circles):
                     # 右手首の位置に円を描画
-                    cv2.circle(frame_data, (int(right_wrist.x * frame_data.shape[1]), int(right_wrist.y * frame_data.shape[0]), 5, (0, 255, 0), -1))
-
-        # OpenCVのBGRカラースペースに戻す
-        frame_data = cv2.cvtColor(frame_data, cv2.COLOR_RGB2BGR)
-
-        # Streamlitウィジェットに新しいフレームを設定
-        frame.image(frame_data, channels="BGR")
+                    draw.ellipse([(int(right_wrist.x * pil_image.width) - 5, int(right_wrist.y * pil_image.height) - 5, int(right_wrist.x * pil_image.width) + 5, int(right_wrist.y * pil_image.height) + 5], fill=(0, 255, 0))
+                
+                # PIL ImageをNumPy配列に戻す
+                frame_data = np.array(pil_image)
+        
+        # Streamlitウィジェットに新しいフレームを表示
+        st.image(frame_data, channels="RGB", use_column_width=True)
                 
 if __name__ == "__main__":
     main()
-
