@@ -1,12 +1,9 @@
 import streamlit as st
-from PIL import Image
-import mediapipe as mp
-import numpy as np
 import cv2
+import mediapipe as mp
 
 # Mediapipeを使って姿勢と手首の位置を検出するためのライブラリのインポート
 mp_holistic = mp.solutions.holistic
-mp_drawing = mp.solutions.drawing_utils
 
 def main():
     # Streamlitアプリケーションのタイトルを設定
@@ -22,9 +19,6 @@ def main():
         # カメラからフレームを取得
         _, frame_data = cap.read()
         
-        # OpenCVのカラースペースからRGBに変換
-        frame_data = cv2.cvtColor(frame_data, cv2.COLOR_BGR2RGB)
-        
         # Mediapipeを使って姿勢と手首の位置を検出
         results = holistic.process(frame_data)
         
@@ -39,23 +33,12 @@ def main():
                 
                 # 距離を表示
                 st.write("Distance between wrists:", distance)
-                
-                # 距離に応じて円を描画
-                num_circles = int(distance * 10)
-                
-                # NumPy配列に直接円を描画
-                for _ in range(num_circles):
-                    cv2.circle(frame_data, (int(right_wrist.x * frame_data.shape[1]), int(right_wrist.y * frame_data.shape[0]), 5, (0, 255, 0), -1)
         
+        # OpenCVのカラースペースからRGBに変換
+        frame_data = cv2.cvtColor(frame_data, cv2.COLOR_BGR2RGB)
+
         # NumPy配列をImageに変換
-        pil_image = Image.fromarray(frame_data)
-        
-        # Imageをバイトデータに変換
-        image_bytes = BytesIO()
-        pil_image.save(image_bytes, format="JPEG")
-        
-        # バイトデータを表示
-        st.image(image_bytes, use_column_width=True, format="JPEG")
+        st.image(frame_data, use_column_width=True, channels="RGB")
                 
 if __name__ == "__main__":
     main()
