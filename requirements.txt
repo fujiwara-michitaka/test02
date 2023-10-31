@@ -1,5 +1,4 @@
 ﻿streamlit
 numpy
 pandas
-streamlit-webrtc
-opencv-python-headless
+scipy
