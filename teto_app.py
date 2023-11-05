@@ -1,54 +1,112 @@
 import streamlit as st
 import random
 
-# ブロックの形状をランダムに生成
-def random_shape():
-    shapes = [
-        [[1, 1, 1, 1]],
-        [[1, 1], [1, 1]],
-        [[1, 1, 1], [0, 1, 0]],
-        [[1, 1, 1], [1, 0, 0]],
-        [[1, 1, 1], [0, 0, 1]],
-    ]
-    return random.choice(shapes)
+# テトリスのゲームボードサイズ
+board_width = 10
+board_height = 20
+block_size = 30  # ブロックのサイズ
 
-# マトリックスを回転
-def rotate_matrix(matrix):
-    return [[row[i] for row in matrix][::-1] for i in range(len(matrix[0]))]
+# テトリスのブロック形状
+tetrominos = [
+    [[1, 1, 1, 1]],  # I
+    [[1, 1], [1, 1]],  # O
+    [[1, 1, 1], [0, 1, 0]],  # T
+    [[1, 1, 1], [0, 0, 1]],  # L
+    [[1, 1, 1], [1, 0, 0]],  # J
+    [[1, 1], [1, 1]],  # Z
+    [[1, 1], [0, 1, 1]]  # S
+]
 
-# ゲームボードの初期化
-def create_grid(grid_rows, grid_cols):
-    return [[0] * grid_cols for _ in range(grid_rows)]
+# テトリスの初期設定
+board = [[0] * board_width for _ in range(board_height)]
+current_tetromino = None
+current_tetromino_x = 0
+current_tetromino_y = 0
 
-# Streamlitアプリケーションの設定
-st.title("テトリス")
+# ブロックをランダムに生成
+def new_tetromino():
+    global current_tetromino, current_tetromino_x, current_tetromino_y
+    current_tetromino = random.choice(tetrominos)
+    current_tetromino_x = board_width // 2 - len(current_tetromino[0]) // 2
+    current_tetromino_y = 0
 
-grid_cols = 10
-grid_rows = 20
-block_size = 30
-grid = create_grid(grid_rows, grid_cols)
-player_block = None
-player_x = 0
-player_y = 0
+# ブロックを描画
+def draw_tetromino():
+    for y, row in enumerate(current_tetromino):
+        for x, cell in enumerate(row):
+            if cell:
+                st.rect(
+                    (current_tetromino_x + x) * block_size,
+                    (current_tetromino_y + y) * block_size,
+                    block_size,
+                    block_size,
+                )
 
-st.set_canvas_update_mode("after")
+# ゲームボードの表示
+def draw_board():
+    for y, row in enumerate(board):
+        for x, cell in enumerate(row):
+            if cell:
+                st.rect(x * block_size, y * block_size, block_size, block_size)
 
-def draw():
-    global player_block, player_x, player_y
+# ブロックを移動
+def move_tetromino(dx, dy):
+    global current_tetromino_x, current_tetromino_y
+    current_tetromino_x += dx
+    current_tetromino_y += dy
 
-    st.clear()
-    
-    if player_block is None:
-        player_block = random_shape() or [[1]]
-        player_x = (grid_cols // 2) - (len(player_block[0]) // 2)
-        player_y = 0
-    
-    player_y += 1
-    
-    for r in range(grid_rows):
-        for c in range(grid_cols):
-            if player_y <= r < player_y + len(player_block) and player_x <= c < player_x + len(player_block[0]):
-                if player_block[r - player_y][c - player_x]:
-                    st.rect(c * block_size, r * block_size, block_size, block_size)
+# ブロックが衝突したかどうかの判定
+def is_collision():
+    for y, row in enumerate(current_tetromino):
+        for x, cell in enumerate(row):
+            if cell:
+                if (
+                    current_tetromino_x + x < 0
+                    or current_tetromino_x + x >= board_width
+                    or current_tetromino_y + y >= board_height
+                    or board[current_tetromino_y + y][current_tetromino_x + x]
+                ):
+                    return True
+    return False
 
-draw()
+# ブロックを固定する
+def lock_tetromino():
+    for y, row in enumerate(current_tetromino):
+        for x, cell in enumerate(row):
+            if cell:
+                board[current_tetromino_y + y][current_tetromino_x + x] = 1
+
+    # 行が揃ったら削除
+    for y in range(board_height - 1, -1, -1):
+        if all(board[y]):
+            del board[y]
+            board.insert(0, [0] * board_width)
+
+# テトリスのメインループ
+def tetris_game():
+    st.title("シンプルなTetris")
+
+    st.sidebar.write("操作方法:")
+    st.sidebar.write("左矢印キー: ブロックを左に移動")
+    st.sidebar.write("右矢印キー: ブロックを右に移動")
+    st.sidebar.write("下矢印キー: ブロックを下に移動")
+
+    if current_tetromino is None:
+        new_tetromino()
+
+    st.set_canvas_update_mode("before")
+
+    draw_board()
+    draw_tetromino()
+
+    st.set_canvas_update_mode("after")
+
+    if is_collision():
+        lock_tetromino()
+        new_tetromino()
+
+    move_tetromino(0, 1)
+
+# Streamlitアプリを実行
+if __name__ == "__main__":
+    tetris_game()
